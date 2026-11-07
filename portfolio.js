@@ -410,11 +410,11 @@
           });
         } else {
           const depth = selected == null ? index : (index < selected ? index : index + 1);
-          const arcSpread = compact ? 118 : 176;
+          const arcSpread = compact ? 118 : 145;
           const arcX = compact ? ((index % 2) ? 118 : -118) : offset * arcSpread;
           const arcY = compact
             ? Math.floor(index / 2) * 250 - 190
-            : Math.abs(offset) * 12 - 12;
+            : Math.abs(offset) * 10 - 6;
           const arcRotation = compact ? ((index % 2) ? 4 : -4) : offset * 4.5;
           const isHovered = selected == null && index === hovered;
           tween(card, {
