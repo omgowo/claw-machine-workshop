@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>作品集 Demo（入場畫面＋轉場）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat&family=Dancing+Script:wght@700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="vendor/circular-carousel/circular-carousel.bundle.css">
+<link rel="stylesheet" href="portfolio.css">
+</head>
+<body>
+<div style="position:fixed;inset:0;display:grid;place-items:center;font-size:22px;opacity:.6">（這裡之後是娃娃機遊戲畫面）</div>
+<div id="intro" aria-label="入場畫面，點擊繼續">
+  <div class="a-stage">
+    <div class="a-ribbon" data-img="assets/intro/a_ribbon.png"></div>
+    <div class="a-shapes" data-img="assets/intro/a_shapes.png"><svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" fill="#b7d2db"/><polygon points="0,10 52,48 0,86" fill="#ecd993"/><polygon points="30,55 100,55 100,100 30,100" fill="#e0b0ad"/></svg></div>
+    <div class="a-welcome" data-img="assets/intro/a_welcome.png">welcome to my</div>
+    <div class="a-profile" data-img="assets/intro/a_profile.png">Profile</div>
+    <div class="a-machine" data-img="assets/intro/a_machine.png"><svg viewBox="0 0 100 150" aria-hidden="true"><rect x="8" y="55" width="84" height="90" rx="6" fill="#f9e08a" stroke="#d9b94e" stroke-width="2"/><rect x="14" y="8" width="72" height="52" rx="4" fill="#fff8d8" stroke="#d9b94e" stroke-width="2"/><path d="M50 10v16M42 28h16M42 28l-5 14M58 28l5 14" stroke="#9a9a9a" fill="none" stroke-width="2.5"/><rect x="14" y="84" width="40" height="18" rx="3" fill="#ffeaa0"/><rect x="26" y="74" width="4" height="12" fill="#999"/><circle cx="28" cy="72" r="5" fill="#e66"/><circle cx="68" cy="93" r="5" fill="#eee" stroke="#d9b94e"/><rect x="20" y="114" width="32" height="24" rx="3" fill="#e9c860"/></svg></div>
+    <div class="a-leaves" data-img="assets/intro/a_leaves.png"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M8 0V70Q8 90 30 90H62" stroke="#e0b0ad" stroke-width="3" fill="none"/><ellipse cx="42" cy="82" rx="9" ry="4.5" fill="#e0b0ad" transform="rotate(-25 42 82)"/><ellipse cx="62" cy="94" rx="9" ry="4.5" fill="#e0b0ad" transform="rotate(20 62 94)"/><ellipse cx="80" cy="86" rx="9" ry="4.5" fill="#e0b0ad" transform="rotate(-25 80 86)"/></svg></div>
+    <div class="a-press" data-img="assets/intro/a_press.png">press to continue… ☺</div>
+  </div>
+</div>
+<div id="frame"></div>
+<nav id="side" aria-label="作品集導覽"></nav>
+<div id="page" aria-live="polite"></div>
+<div id="blocks" aria-hidden="true"><div class="blk"></div><div class="blk"></div><div class="blk"></div><div class="blk"></div><div class="blk"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15/dist/gsap.min.js"></script>
+<script src="vendor/circular-carousel/circular-carousel.bundle.js"></script>
+<script src="data/works.js"></script>
+<script src="portfolio.js"></script>
+</body>
+</html>

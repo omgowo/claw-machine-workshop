@@ -1,0 +1,132 @@
+/* 作品集層：低飽和的黃、粉、淺藍，手繪紙張感。不修改 style.css 的任何規則。 */
+:root{--paper:#f6eed6;--ink:#6e5f60;--yellow:#ecd993;--yellow-t:#f4e8b9;--pink:#dfb4b0;--pink-t:#ecd0cb;--blue:#b7d2db;--blue-t:#d2e2e6;--rose:#b9868d;--tabw:60px;--paper-2:#efe4c4;--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .43 0 0 0 0 .37 0 0 0 0 .36 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");--wave:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='8'%3E%3Cpath d='M0 4Q10 0 20 4T40 4T60 4T80 4' fill='none' stroke='%23d9c77c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E")}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#2d2928;--paper-2:#38322f;--ink:#e9dfd0;--yellow:#8f8250;--yellow-t:#4a4430;--pink:#97706f;--pink-t:#4a3836;--blue:#6c8a95;--blue-t:#33444a;--rose:#d4a2a8}}
+h1{display:none}
+body.page-open #ui,body.page-open p.hint,body.prize-open #ui,body.prize-open p.hint{display:none}
+
+/* 遊戲暫停時（入場、開分頁、展示獎品），畫面上的操作鈕呈現停用狀態 */
+body.game-paused #ui button{opacity:.35;pointer-events:none;transition:opacity .2s}
+
+/* ---------- 入場畫面 A ---------- */
+#intro{position:fixed;inset:0;z-index:100;background-color:#f6eed6;background-image:var(--grain);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;--r:0px;--line-c:#6e5f60}
+#intro::after{content:'';position:absolute;inset:12px;border:2px solid var(--line-c);border-radius:7px 11px 8px 10px;outline:1px solid rgba(110,95,96,.28);outline-offset:4px;opacity:.7;pointer-events:none}
+.a-stage{--S:min(100vw,140vh);position:relative;width:var(--S);height:calc(var(--S)/1.4);font-family:'Noto Sans TC',sans-serif}
+.a-stage>*{position:absolute;margin:0}
+.a-stage img,.a-stage svg{width:100%;height:100%;display:block;object-fit:contain;-webkit-user-drag:none;user-select:none}
+.a-ribbon{left:1%;top:1%;width:8%;height:34%;background:repeating-linear-gradient(135deg,#7f9db0 0 14px,#bcd5de 14px 28px);clip-path:polygon(0 0,100% 0,100% 100%,50% 86%,0 100%)}
+.a-ribbon:not(.has-img)::after{content:'';position:absolute;left:12%;top:52%;width:22%;aspect-ratio:1;border-radius:50%;background:#d9a0a6}
+.a-ribbon.has-img{background:none;clip-path:none}
+.a-shapes{left:71%;top:11%;width:22%;height:31%}
+.a-welcome{left:10%;top:17%;width:52%;height:12%;font-family:'Dancing Script',cursive;font-weight:700;font-size:calc(var(--S)*.07);color:#d9a0a6;white-space:nowrap;line-height:1.1}
+.a-welcome .ch{display:inline-block;white-space:pre}
+.a-profile{left:31%;top:34%;width:62%;height:42%;font-family:'Dancing Script',cursive;font-weight:700;font-size:calc(var(--S)*.2);color:#b98a92;line-height:1;white-space:nowrap}
+.a-machine{left:14%;top:31%;width:19%;height:48%;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ctext y='24' font-size='24'%3E%F0%9F%A6%BE%3C/text%3E%3C/svg%3E") 16 16,pointer;will-change:transform}
+.a-leaves{left:6%;top:50%;width:41%;height:48%}
+.a-press{left:53%;top:78%;width:44%;height:9%;font-family:'Caveat',cursive;font-size:calc(var(--S)*.035);color:#8fb0bd;text-align:center}
+.a-stage>*:not(.a-machine){pointer-events:none}
+.spark{position:absolute;pointer-events:none;color:#d9b85a;font-size:calc(var(--S)*.025)}
+
+/* ---------- 側欄：貼在右緣，平常收成圖示，滑過展開（類 Aceternity 側欄的效果，配上紙張風格） ---------- */
+#side{visibility:hidden}
+#side.ready{visibility:visible}
+.dock{position:fixed;top:0;right:0;bottom:0;width:var(--tabw);z-index:90;box-sizing:border-box;padding:14px 9px;display:flex;flex-direction:column;gap:6px;background-color:var(--paper-2);background-image:var(--grain);border-left:1.5px solid var(--ink);overflow:hidden;transition:width .3s cubic-bezier(.22,1,.36,1)}
+.dock:hover,.dock:focus-within{width:220px}
+.brand{display:flex;align-items:center;gap:10px;height:42px;margin-bottom:12px;white-space:nowrap}
+.brand .mark{flex:0 0 40px;height:40px;box-sizing:border-box;border:1.5px solid var(--ink);border-radius:11px 13px 10px 12px;background:var(--yellow);display:grid;place-items:center;font:700 24px 'Dancing Script',serif;color:var(--rose)}
+.name{font:700 22px 'Dancing Script','Noto Sans TC',sans-serif;color:var(--rose);white-space:nowrap}
+.dock .name{opacity:0;transition:opacity .2s}
+.dock:hover .name,.dock:focus-within .name{opacity:1}
+.item{display:flex;align-items:center;gap:12px;height:44px;padding:0 4px;border:1.5px solid transparent;border-radius:12px 14px 11px 13px;background:transparent;color:var(--ink);font:inherit;font-size:15px;cursor:pointer;white-space:nowrap;text-align:left}
+.item .ico{flex:0 0 30px;height:30px;border-radius:50%;display:grid;place-items:center}
+.item[data-tone="0"] .ico{background:var(--yellow)}
+.item[data-tone="1"] .ico{background:var(--pink)}
+.item[data-tone="2"] .ico{background:var(--blue)}
+.item .ico svg{width:18px;height:18px;stroke:var(--ink);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.dock .item .label{opacity:0;transition:opacity .2s,transform .15s}
+.dock:hover .item .label,.dock:focus-within .item .label{opacity:1}
+.item:hover{background:color-mix(in srgb,var(--yellow) 40%,transparent)}
+.item:hover .label{transform:translateX(4px)}
+.item[aria-current="true"]{background:var(--paper);border-color:var(--ink);font-weight:700}
+.mbar,.moverlay{display:none}
+#frame{position:fixed;inset:12px calc(var(--tabw) + 12px) 12px 12px;z-index:81;display:none;border:2px solid var(--ink);border-radius:7px 11px 8px 10px;outline:1px solid color-mix(in srgb,var(--ink) 30%,transparent);outline-offset:4px;opacity:.7;pointer-events:none}
+body.page-open #frame,body.prize-open #frame{display:block}
+
+/* ---------- 分頁 ---------- */
+#page{position:fixed;inset:0;z-index:80;display:none;overflow:auto;background-color:var(--paper);background-image:var(--grain);color:var(--ink);padding:44px calc(var(--tabw) + 44px) 48px 44px;box-sizing:border-box}
+#page.open{display:block}
+.pg-back{font:inherit;font-size:14px;padding:7px 16px;border-radius:999px;border:1.5px solid var(--ink);background:var(--yellow-t);color:var(--ink);cursor:pointer}
+.pg-back:hover{background:var(--pink-t)}
+.pg-head h2{font:700 38px/1.1 'Dancing Script','Noto Sans TC',sans-serif;color:var(--rose);margin:22px 0 4px;display:inline-block}
+.pg-head h2::after{content:'';display:block;height:8px;margin-top:6px;background:var(--wave) repeat-x}
+.pg-head p{margin:10px 0 24px;opacity:.8}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px}
+.gcard{background:var(--yellow-t);border:1.5px solid var(--ink);border-radius:12px 16px 11px 15px;overflow:hidden}
+.gcard:nth-child(3n+2){background:var(--pink-t)}
+.gcard:nth-child(3n+3){background:var(--blue-t)}
+.gcard .thumb{aspect-ratio:4/3;background-color:var(--blue);background-image:repeating-linear-gradient(135deg,rgba(110,95,96,.12) 0 2px,transparent 2px 9px);border-bottom:1.5px solid var(--ink)}
+.gcard:nth-child(3n+1) .thumb{background-color:var(--pink)}
+.gcard:nth-child(3n+2) .thumb{background-color:var(--yellow)}
+.gcard .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.gcard .meta{padding:12px 14px}
+.gcard h3{margin:0 0 4px;font-size:17px}.gcard p{margin:0;font-size:13px;opacity:.75}
+
+/* 卡牌扇形 */
+.fan{position:relative;height:360px;margin-top:40px}
+.fan .card{position:absolute;left:50%;top:60px;width:150px;height:210px;margin-left:-75px;border:1.5px solid var(--ink);border-radius:12px 16px 11px 15px;background:var(--paper);color:var(--ink);transform-origin:50% 120%;cursor:pointer;overflow:hidden;user-select:none}
+.fan .card .cover{height:140px;background-color:var(--pink);background-image:repeating-linear-gradient(135deg,rgba(110,95,96,.12) 0 2px,transparent 2px 9px);border-bottom:1.5px solid var(--ink)}
+.fan .card:nth-child(3n+2) .cover{background-color:var(--yellow)}
+.fan .card:nth-child(3n+3) .cover{background-color:var(--blue)}
+.fan .card .cover img{width:100%;height:100%;object-fit:cover;display:block}
+.fan .card .t{padding:8px 10px;font-weight:700;font-size:14px}
+.fan-info{text-align:center;margin-top:24px;min-height:56px;font-size:18px}
+.fan-info small{display:block;opacity:.7;font-size:14px;margin-top:4px}
+
+.mb-host{max-width:980px;margin:6px auto 0;border:1.5px solid var(--ink);border-radius:12px 16px 11px 15px;overflow:hidden}
+.cc-host{height:min(62vh,500px);margin-top:6px}
+
+/* ---------- 獎品展示 ---------- */
+#prize{position:fixed;inset:0;z-index:85;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:28px calc(var(--tabw) + 28px) 28px 28px;box-sizing:border-box;text-align:center;color:var(--ink);background:color-mix(in srgb,var(--paper) 84%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#prize.open{display:flex}
+#prize .pv-tag{font:700 22px 'Dancing Script','Noto Sans TC',sans-serif;color:var(--rose)}
+#prize h2{margin:0;font:700 40px/1.1 'Dancing Script','Noto Sans TC',sans-serif;color:var(--rose)}
+#prize canvas,#prize .pv-fallback{width:min(70vw,48vh);height:min(70vw,48vh);cursor:grab;touch-action:none}
+#prize canvas:active{cursor:grabbing}
+#prize .pv-fallback{display:grid;place-items:center;opacity:.6;cursor:default}
+#prize p{max-width:34em;margin:0;opacity:.85}
+#prize .pv-hint{font-size:13px;opacity:.6}
+#prize .row{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+#prize .btn{font:inherit;padding:10px 20px;border-radius:999px;border:1.5px solid var(--ink);background:var(--yellow-t);color:var(--ink);cursor:pointer}
+#prize .btn.main{background:var(--yellow);font-weight:700}
+#prize .btn:hover{background:var(--pink-t)}
+
+/* ---------- 作品大圖彈窗 ---------- */
+.mb-host .mbx-on .mbx-tray img{cursor:zoom-in}
+#lightbox{position:fixed;inset:0;z-index:94;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;box-sizing:border-box;cursor:zoom-out;color:var(--ink);background:color-mix(in srgb,var(--paper) 94%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#lightbox.open{display:flex}
+#lightbox img{max-width:min(92vw,1100px);max-height:82vh;object-fit:contain;border:1.5px solid var(--ink);border-radius:6px 9px 7px 8px;background:var(--paper);box-shadow:0 10px 30px rgba(60,40,20,.18)}
+#lightbox .cap{font-size:14px;letter-spacing:.06em;opacity:.75;max-width:40em;text-align:center}
+#lightbox .x{position:absolute;top:14px;right:16px;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--ink);background:var(--yellow-t);color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
+
+/* ---------- 色塊轉場 ---------- */
+#blocks{position:fixed;inset:0;z-index:95;display:none;pointer-events:all}
+#blocks .blk{flex:1;height:100%}
+#blocks .blk:nth-child(5n+1),#blocks .blk:nth-child(5n+5){background:#ecd993}
+#blocks .blk:nth-child(5n+2),#blocks .blk:nth-child(5n+4){background:#dfb4b0}
+#blocks .blk:nth-child(5n+3){background:#b7d2db}
+
+@media (max-width:700px){
+  :root{--tabw:0px}
+  .dock{display:none}
+  .mbar{display:flex;position:fixed;top:0;left:0;right:0;height:46px;z-index:90;box-sizing:border-box;align-items:center;justify-content:space-between;padding:0 14px;background-color:var(--paper-2);background-image:var(--grain);border-bottom:1.5px solid var(--ink)}
+  .mbar button,.moverlay .close{border:0;background:transparent;color:var(--ink);cursor:pointer;padding:6px}
+  .mbar svg,.moverlay .close svg{width:24px;height:24px;stroke:var(--ink);fill:none;stroke-width:1.8;stroke-linecap:round}
+  .moverlay{position:fixed;inset:0;z-index:92;flex-direction:column;gap:8px;padding:64px 28px 28px;background-color:var(--paper);background-image:var(--grain)}
+  .moverlay:not(.open){display:none}
+  .moverlay.open{display:flex}
+  .moverlay .close{position:absolute;top:10px;right:14px}
+  .moverlay .item{height:54px;font-size:18px}
+  #frame{inset:58px 10px 10px 10px}
+  #page{padding:70px 22px 40px 22px}
+  #prize{padding:64px 20px 24px 20px}
+  #prize h2{font-size:32px}
+}
