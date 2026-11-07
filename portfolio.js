@@ -13,7 +13,7 @@
   const W = window.WORKS || { pages: [] };
 
   const intro = $('#intro'), side = $('#side'), pageEl = $('#page'), blocksEl = $('#blocks');
-  const state = { scene: 'intro', current: 'game', busy: false, carousel: null, viewerOpen: false, lightbox: false };
+  const state = { scene: 'intro', current: 'game', busy: false, carousel: null, viewerOpen: false, lightbox: false, vinylClose: null };
   // 暫停／恢復遊戲輸入（鍵盤、搖桿、抓取鈕）。沒有載入 main.js 時什麼都不做。
   const pauseGame = p => { try { if (window.GameControls) window.GameControls.setPaused(p); } catch (e) { /* 忽略 */ } };
 
@@ -59,10 +59,157 @@
     if (src) { const i = new Image(); i.alt = ''; i.src = src; t.appendChild(i); }
     return t;
   }
+  function buildHw2Demo(host) {
+    const wrap = el('div', 'hw2-demo');
+    const canvas = el('canvas', 'hw2-canvas');
+    canvas.width = 1024;
+    canvas.height = 768;
+    canvas.setAttribute('aria-label', 'HW2 Processing 影像旋轉與換圖動畫');
+    wrap.appendChild(canvas);
+    const controls = el('div', 'hw2-controls');
+    controls.appendChild(el('span', null, '自動播放中・按住畫布顯示 girl.png'));
+    const source = el('button', 'hw2-source', 'code<>');
+    source.type = 'button';
+    source.setAttribute('aria-label', '查看 PDE 程式原始碼');
+    source.addEventListener('click', () => openCodeViewer('assets/works/hw2/Mydraw.pde'));
+    controls.appendChild(source);
+    wrap.appendChild(controls);
+    host.appendChild(wrap);
+
+    const ctx = canvas.getContext('2d');
+    const cat = new Image();
+    const girl = new Image();
+    cat.src = 'assets/works/hw2/cat.png';
+    girl.src = 'assets/works/hw2/girl.png';
+    let mouseX = 512, mouseY = 384, showGirl = false, started = false, raf = 0;
+    const startedAt = performance.now();
+
+    function pointer(event) {
+      const rect = canvas.getBoundingClientRect();
+      const point = event.touches ? event.touches[0] : event;
+      mouseX = (point.clientX - rect.left) * canvas.width / rect.width;
+      mouseY = (point.clientY - rect.top) * canvas.height / rect.height;
+    }
+    canvas.addEventListener('pointermove', pointer);
+    canvas.addEventListener('pointerdown', function (event) {
+      pointer(event);
+      showGirl = true;
+    });
+    canvas.addEventListener('pointerup', function () { showGirl = false; });
+    canvas.addEventListener('pointercancel', function () { showGirl = false; });
+    canvas.addEventListener('pointerleave', function () { showGirl = false; });
+
+    function ellipse(x, y, rx, ry, fill, stroke, lineWidth) {
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+      if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+      if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lineWidth || 1; ctx.stroke(); }
+    }
+    function drawEar(t) {
+      const cx = 350, cy = 265;
+      ctx.save();
+      ctx.translate(cx, cy + 98);
+      ctx.rotate(.349066 * Math.sin(t - .3));
+      ctx.fillStyle = '#84746a';
+      ellipse(69, -176, 42, 70, '#84746a');
+      ellipse(-69, -176, 42, 70, '#84746a');
+      ctx.restore();
+    }
+    function drawHead(t) {
+      const cx = 350, cy = 265;
+      ctx.save();
+      ctx.translate(cx, cy + 105);
+      ctx.rotate(.349066 * Math.sin(t));
+      ellipse(0, -100, 121.5, 104, '#c4b4af');
+      ellipse(0, -100, 72.5, 57.5, '#84746a');
+      ellipse(-77, -63, 21, 16, '#d799b3');
+      ellipse(76, -63, 21, 16, '#d799b3');
+      ellipse(-61, -103, 42, 40, '#dae3f3');
+      ellipse(64, -103, 42, 40, '#dae3f3');
+      ellipse(-59, -106, 36, 32, '#000');
+      ellipse(61, -106, 35, 32, '#000');
+      ellipse(-47, -122, 7.5, 7.5, '#fff');
+      ellipse(49, -122, 7.5, 7.5, '#fff');
+      ctx.strokeStyle = '#412e23';
+      ctx.lineWidth = 3;
+      [[-150,-64,-115,-66],[-148,-23,-106,-49],[115,-64,150,-60],[103,-45,140,-24]].forEach(function (line) {
+        ctx.beginPath();
+        ctx.moveTo(line[0], line[1]);
+        ctx.lineTo(line[2], line[3]);
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+    function drawBall(t) {
+      const bx = 500, by = 460, dx = 360 * Math.sin(t);
+      ctx.save();
+      ctx.translate(bx + dx, by);
+      ctx.rotate(dx / 61);
+      ctx.translate(-bx, -by);
+      ellipse(bx, by, 63.5, 61, '#5b9bd5', '#000', 1.2);
+      ctx.strokeStyle = '#1e3c6e';
+      ctx.lineWidth = 3;
+      [[-55,-4,-25,2,9,-12,16,-39],[-26,24,7,24,39,-4,32,-44],[-44,34,-17,54,35,46,43,15]].forEach(function (b) {
+        ctx.beginPath();
+        ctx.moveTo(b[0] + bx, b[1] + by);
+        ctx.bezierCurveTo(b[2] + bx, b[3] + by, b[4] + bx, b[5] + by, b[6] + bx, b[7] + by);
+        ctx.stroke();
+      });
+      ctx.strokeStyle = '#0072bc';
+      ellipse(bx - 81, by - 18, 11.5, 10.5, null, '#0072bc', 1);
+      ctx.beginPath();
+      ctx.moveTo(bx - 92, by - 16);
+      ctx.bezierCurveTo(bx - 87, by + 4, bx - 95, by + 28, bx - 114, by + 39);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(bx - 82, by - 28);
+      ctx.bezierCurveTo(bx - 73, by - 34, bx - 61, by - 34, bx - 53, by - 32);
+      ctx.stroke();
+      ctx.restore();
+    }
+    function draw(time) {
+      const t = (time - startedAt) / 1000;
+      ctx.fillStyle = '#fffcd6';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#5a3b3b';
+      ctx.font = '50px "Noto Serif TC", serif';
+      ctx.fillText('2D 點陣彩圖置入與換圖', canvas.width / 2, 50);
+      ctx.fillStyle = '#9a76aa';
+      ctx.font = '25px "Noto Serif TC", serif';
+      ctx.fillText('by 41547006S 程靖庭', canvas.width / 2, 85);
+      const active = showGirl ? girl : cat;
+      if (active.complete && active.naturalWidth) {
+        const size = showGirl ? 200 : 100;
+        ctx.drawImage(active, mouseX - size / 2, mouseY - size / 2, size, size);
+      }
+      ellipse(374, 459, 80, 21, '#bfbfbf');
+      ellipse(351, 405, 79.5, 61, '#bfbfbf');
+      ellipse(461, 435, 65, 13, '#c4b4af');
+      ellipse(351, 405, 79.5, 61, '#c4b4af');
+      ellipse(358, 369, 54, 20, '#bba7a1');
+      drawEar(t);
+      drawHead(t);
+      drawBall(t);
+      raf = requestAnimationFrame(draw);
+    }
+    function start() {
+      if (started) return;
+      started = true;
+      raf = requestAnimationFrame(draw);
+    }
+    cat.onload = girl.onload = start;
+    return wrap;
+  }
   function buildGrid(p, body) {
     const g = el('div', 'grid');
     p.items.forEach(it => {
-      const c = el('div', 'gcard'); c.appendChild(thumb(it.img));
+      const c = el('div', 'gcard');
+      if (it.demo === 'hw2-image-rotate') {
+        buildHw2Demo(c);
+      } else {
+        c.appendChild(thumb(it.img));
+      }
       const m = el('div', 'meta'); m.appendChild(el('h3', null, it.title)); m.appendChild(el('p', null, it.desc || ''));
       c.appendChild(m); g.appendChild(c);
     });
@@ -114,7 +261,292 @@
       autoplay: 'drift', speed: 9, fadeColor: paper, innerShade: .85, cornerRadius: 14, depthFade: .5, captions: true
     });
   }
+  function buildModelCards(p, body) {
+    const host = el('div', 'model-playlist');
+    const stack = el('div', 'vinyl-stack');
+    const detail = el('div', 'vinyl-detail');
+    const detailTitle = el('strong');
+    const detailArtist = el('span');
+    detail.appendChild(detailTitle);
+    detail.appendChild(detailArtist);
+    host.appendChild(stack);
+    host.appendChild(detail);
+    const cards = [];
+    let selected = null;
+    let hovered = null;
+    let openVersion = 0;
+    let delayedOpen = null;
+    const loader = window.THREE && window.THREE.GLTFLoader ? new window.THREE.GLTFLoader() : null;
+
+    function renderModel(card, source) {
+      if (!loader) {
+        card.querySelector('.model-status').textContent = 'GLTFLoader 尚未載入';
+        return;
+      }
+      const canvas = card.querySelector('canvas');
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      } catch (error) {
+        card.querySelector('.model-status').textContent = '模型預覽無法建立';
+        return;
+      }
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      if ('toneMapping' in renderer && THREE.ACESFilmicToneMapping !== undefined) {
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.12;
+      }
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(32, 1, .01, 100);
+      camera.position.set(0, 0, 3.2);
+      const envCanvas = document.createElement('canvas');
+      envCanvas.width = 256;
+      envCanvas.height = 128;
+      const envContext = envCanvas.getContext('2d');
+      const envGradient = envContext.createLinearGradient(0, 0, 0, envCanvas.height);
+      envGradient.addColorStop(0, '#fff8e9');
+      envGradient.addColorStop(.45, '#f4e3c9');
+      envGradient.addColorStop(1, '#7b7180');
+      envContext.fillStyle = envGradient;
+      envContext.fillRect(0, 0, envCanvas.width, envCanvas.height);
+      const environment = new THREE.CanvasTexture(envCanvas);
+      environment.mapping = THREE.EquirectangularReflectionMapping;
+      environment.needsUpdate = true;
+      scene.environment = environment;
+      scene.add(new THREE.HemisphereLight(0xfff8ec, 0x82758b, 2.25));
+      const key = new THREE.DirectionalLight(0xffffff, 1.9);
+      key.position.set(2.5, 4.5, 4);
+      scene.add(key);
+      const rim = new THREE.DirectionalLight(0xbddcff, 1.25);
+      rim.position.set(-3.5, 2.2, -3);
+      scene.add(rim);
+      const group = new THREE.Group();
+      scene.add(group);
+      let model = null;
+      let startedAt = performance.now();
+      loader.load(source, gltf => {
+        model = gltf.scene;
+        const bounds = new THREE.Box3().setFromObject(model);
+        const size = bounds.getSize(new THREE.Vector3());
+        const center = bounds.getCenter(new THREE.Vector3());
+        const largest = Math.max(size.x, size.y, size.z) || 1;
+        model.scale.setScalar(1.45 / largest);
+        model.position.set(-center.x * model.scale.x, -center.y * model.scale.y, -center.z * model.scale.z);
+        model.traverse(node => {
+          if (!node.isMesh) return;
+          node.castShadow = true;
+          node.receiveShadow = true;
+          if (node.material) {
+            const materials = Array.isArray(node.material) ? node.material : [node.material];
+            materials.forEach(material => { material.needsUpdate = true; });
+          }
+        });
+        group.add(model);
+        card.querySelector('.model-status').remove();
+        startedAt = performance.now();
+      }, undefined, () => {
+        card.querySelector('.model-status').textContent = '模型載入失敗';
+      });
+      function frame(time) {
+        if (!canvas.isConnected) {
+          renderer.dispose();
+          return;
+        }
+        if (model) {
+          group.rotation.y = Math.sin(time * .0004) * .035;
+          if (selected === card) group.rotation.z = (time - startedAt) * .00065;
+          else group.rotation.z = 0;
+        }
+        renderer.render(scene, camera);
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+      return renderer;
+    }
+
+    function tween(target, vars) {
+      if (G) G.to(target, Object.assign({ duration: D(.55), ease: 'power3.out' }, vars));
+      else Object.keys(vars).forEach(key => { if (key !== 'duration' && key !== 'ease') target.style[key] = vars[key]; });
+    }
+    function showDetail(item) {
+      detailTitle.textContent = item.title;
+      detailArtist.textContent = item.artist || '';
+      detail.classList.add('is-visible');
+      if (G) G.fromTo(detail, { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: D(.4), ease: 'power2.out', overwrite: true });
+    }
+    function hideDetail() {
+      if (!detail.classList.contains('is-visible')) return;
+      if (G) G.to(detail, { opacity: 0, x: 12, duration: D(.22), ease: 'power2.in', overwrite: true,
+        onComplete: () => detail.classList.remove('is-visible') });
+      else detail.classList.remove('is-visible');
+    }
+    function cancelDelayedOpen() {
+      openVersion += 1;
+      if (delayedOpen) {
+        if (G) delayedOpen.kill();
+        delayedOpen = null;
+      }
+    }
+    function openSelection(index, item) {
+      selected = index;
+      hovered = null;
+      host.classList.add('is-open');
+      cards.forEach(other => other.classList.toggle('is-selected', other === cards[index]));
+      showDetail(item);
+      layout();
+    }
+    function layout() {
+      const mid = (cards.length - 1) / 2;
+      const compact = window.innerWidth <= 700;
+      cards.forEach((card, index) => {
+        const offset = index - mid;
+        const isSelected = selected === index;
+        const hoverShift = selected == null && hovered != null
+          ? (index < hovered ? -12 : index > hovered ? 16 : 0) : 0;
+        if (isSelected) {
+          tween(card, {
+            x: compact ? 0 : 88, y: compact ? 8 : -70, rotation: 0, scale: 1.08, opacity: 1, zIndex: 50,
+            filter: 'brightness(1)', pointerEvents: 'auto'
+          });
+        } else {
+          const depth = selected == null ? index : (index < selected ? index : index + 1);
+          const arcSpread = compact ? 118 : 176;
+          const arcX = compact ? ((index % 2) ? 118 : -118) : offset * arcSpread;
+          const arcY = compact
+            ? Math.floor(index / 2) * 250 - 190
+            : Math.abs(offset) * 12 - 12;
+          const arcRotation = compact ? ((index % 2) ? 4 : -4) : offset * 4.5;
+          const isHovered = selected == null && index === hovered;
+          tween(card, {
+            x: selected == null ? arcX + hoverShift : offset * 8,
+            y: selected == null ? arcY + (isHovered ? -18 : 0) : depth * 23 - 28,
+            rotation: selected == null ? arcRotation : offset * 2.8,
+            scale: selected == null ? (isHovered ? 1.05 : 1) : .76,
+            opacity: selected == null ? 1 : .42,
+            zIndex: selected == null ? (isHovered ? 60 : index + 1) : depth,
+            filter: selected == null ? 'brightness(1)' : 'brightness(.58)',
+            pointerEvents: 'auto'
+          });
+        }
+      });
+    }
+    function closeSelection() {
+      cancelDelayedOpen();
+      if (selected == null) return false;
+      selected = null;
+      hovered = null;
+      cards.forEach(card => card.classList.remove('is-selected'));
+      hideDetail();
+      host.classList.remove('is-open');
+      layout();
+      return true;
+    }
+    state.vinylClose = closeSelection;
+
+    p.items.forEach((item, index) => {
+      const card = el('button', 'model-card vinyl-record');
+      card.type = 'button';
+      card.dataset.index = String(index);
+      const stage = el('span', 'model-stage');
+      const canvas = el('canvas');
+      canvas.width = 420;
+      canvas.height = 420;
+      stage.appendChild(canvas);
+      stage.appendChild(el('span', 'model-status', '載入模型…'));
+      card.appendChild(stage);
+      const meta = el('span', 'model-meta');
+      meta.appendChild(el('strong', null, item.title));
+      meta.appendChild(el('small', null, item.artist || ''));
+      card.appendChild(meta);
+      card.setAttribute('aria-label', item.title + '，' + item.artist);
+      card.addEventListener('mouseenter', () => {
+        if (selected == null) { hovered = index; layout(); }
+      });
+      card.addEventListener('mouseleave', () => {
+        if (selected == null && hovered === index) { hovered = null; layout(); }
+      });
+      card.addEventListener('click', () => {
+        if (selected === index) {
+          closeSelection();
+          return;
+        }
+        if (selected != null) {
+          const version = ++openVersion;
+          selected = null;
+          hovered = null;
+          cards.forEach(other => other.classList.remove('is-selected'));
+          hideDetail();
+          host.classList.remove('is-open');
+          layout();
+          const reveal = () => {
+            delayedOpen = null;
+            if (version === openVersion) openSelection(index, item);
+          };
+          if (G) delayedOpen = G.delayedCall(D(.42), reveal);
+          else window.setTimeout(reveal, 420);
+          return;
+        }
+        openSelection(index, item);
+      });
+      cards.push(card);
+      stack.appendChild(card);
+      renderModel(card, item.model);
+    });
+    stack.addEventListener('click', event => {
+      if (event.target === stack && selected != null) closeSelection();
+    });
+    host.addEventListener('click', event => {
+      if (event.target === host && selected != null) closeSelection();
+    });
+    const note = el('p', 'model-playlist-note', '唱片載入後會堆疊展示・hover 抬起，點選抽出');
+    body.appendChild(host);
+    body.appendChild(note);
+    layout();
+  }
   function destroyCarousel() { if (state.carousel) { state.carousel.destroy(); state.carousel = null; } }
+  /* ---------- PDE 程式碼檢視器 ---------- */
+  const codeViewer = el('div');
+  codeViewer.id = 'code-viewer';
+  codeViewer.setAttribute('role', 'dialog');
+  codeViewer.setAttribute('aria-modal', 'true');
+  codeViewer.setAttribute('aria-label', 'PDE 程式原始碼');
+  document.body.appendChild(codeViewer);
+  let codeOpen = false;
+  async function openCodeViewer(src) {
+    codeViewer.textContent = '';
+    const panel = el('div', 'code-panel');
+    const head = el('div', 'code-head');
+    head.appendChild(el('strong', null, 'Mydraw.pde'));
+    const close = el('button', 'code-close', '×');
+    close.type = 'button';
+    close.setAttribute('aria-label', '關閉程式碼');
+    head.appendChild(close);
+    const pre = el('pre', 'code-content', '正在載入 PDE 原始碼…');
+    panel.appendChild(head);
+    panel.appendChild(pre);
+    codeViewer.appendChild(panel);
+    codeViewer.classList.add('open');
+    codeOpen = true;
+    close.addEventListener('click', closeCodeViewer);
+    try {
+      const response = await fetch(src);
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      pre.textContent = await response.text();
+    } catch (error) {
+      pre.textContent = '無法載入 PDE 原始碼。\n\n' + error.message;
+    }
+    close.focus();
+  }
+  function closeCodeViewer() {
+    if (!codeOpen) return;
+    codeOpen = false;
+    codeViewer.classList.remove('open');
+    codeViewer.textContent = '';
+  }
+  codeViewer.addEventListener('click', event => {
+    if (event.target === codeViewer) closeCodeViewer();
+  });
+
   /* ---------- 作品大圖彈窗 ---------- */
   const lb = el('div'); lb.id = 'lightbox'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true'); lb.setAttribute('aria-label', '作品大圖');
   document.body.appendChild(lb);
@@ -159,6 +591,7 @@
   }
   function openPage(id) {
     destroyCarousel();
+    state.vinylClose = null;
     const p = W.pages.find(x => x.id === id); if (!p) return;
     pageEl.textContent = '';
     const head = el('div', 'pg-head');
@@ -166,12 +599,13 @@
     head.appendChild(back); head.appendChild(el('h2', null, p.label)); head.appendChild(el('p', null, p.intro || ''));
     const body = el('div', 'pg-body');
     pageEl.appendChild(head); pageEl.appendChild(body);
-    (p.type === 'cards' ? (window.mountCircularCarousel ? buildCarousel : buildFan)
+    (p.type === 'model-cards' ? buildModelCards
+      : p.type === 'cards' ? (window.mountCircularCarousel ? buildCarousel : buildFan)
       : p.type === 'matchbox' ? (window.mountMatchboxCarousel ? buildMatchbox : buildGrid) : buildGrid)(p, body);
     pageEl.scrollTop = 0; pageEl.classList.add('open'); document.body.classList.add('page-open'); pauseGame(true);
     if (G) G.from(pageEl.querySelectorAll('.pg-head > *, .gcard, .fan .card, .mb-host'), { y: 28, opacity: 0, stagger: D(.07), duration: D(.5), delay: D(.3), ease: 'power3.out', clearProps: 'opacity,y' });
   }
-  function closePage() { pauseGame(false); destroyCarousel(); pageEl.classList.remove('open'); document.body.classList.remove('page-open'); pageEl.textContent = ''; }
+  function closePage() { pauseGame(false); state.vinylClose = null; destroyCarousel(); pageEl.classList.remove('open'); document.body.classList.remove('page-open'); pageEl.textContent = ''; }
 
   /* ---------- 色塊轉場 ---------- */
   function transition(swap) {
@@ -196,7 +630,9 @@
   }
   document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
   document.addEventListener('keydown', e => { if (e.key !== 'Escape') return;
+    if (codeOpen) { closeCodeViewer(); return; }
     if (state.lightbox) { closeLightbox(); return; }
+    if (state.vinylClose && state.vinylClose()) return;
     if (state.viewerOpen) hideViewer(true);
     else if (state.current !== 'game') go('game'); });
 

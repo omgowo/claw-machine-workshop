@@ -24,11 +24,14 @@ window.WORKS = {
   pages: [
     {
       id: 'processing', label: 'Processing 設計', type: 'grid',
-      intro: '（佔位文字）這裡放 Processing 課程的設計作品與說明。',
+      intro: 'HW2｜2D 點陣彩圖置入與換圖：使用 Processing 製作的影像旋轉與替換作品。',
       items: [
-        { title: '作品名稱 1', desc: '（佔位）課程名稱與作品說明', img: '' },
-        { title: '作品名稱 2', desc: '（佔位）課程名稱與作品說明', img: '' },
-        { title: '作品名稱 3', desc: '（佔位）課程名稱與作品說明', img: '' }
+        {
+          title: 'HW2｜2D 點陣彩圖置入與換圖',
+          desc: 'Processing 影像旋轉與換圖練習。畫面結合自製角色、圖片素材與程式碼展示。',
+          demo: 'hw2-image-rotate',
+          source: 'assets/works/hw2/Mydraw.pde'
+        }
       ]
     },
     {
@@ -41,17 +44,14 @@ window.WORKS = {
       ]
     },
     {
-      id: 'music', label: 'Playlist', type: 'cards',
-      intro: '拖曳可以旋轉，點一張卡牌會轉到正面。',
+      id: 'music', label: 'Playlist', type: 'model-cards',
+      intro: '從唱片堆疊中抽出一張，看看它的歌名與歌手；只展示文字，不嵌入音訊。',
       items: [
-        { title: '歌名 1', artist: '歌手', cover: '' },
-        { title: '歌名 2', artist: '歌手', cover: '' },
-        { title: '歌名 3', artist: '歌手', cover: '' },
-        { title: '歌名 4', artist: '歌手', cover: '' },
-        { title: '歌名 5', artist: '歌手', cover: '' },
-        { title: '歌名 6', artist: '歌手', cover: '' },
-        { title: '歌名 7', artist: '歌手', cover: '' },
-        { title: '歌名 8', artist: '歌手', cover: '' }
+        { title: '海浪', artist: 'Deca Joins', model: 'assets/vinyl/01_decajoins_go-slow.glb' },
+        { title: 'Lover Girl', artist: 'Laufey', model: 'assets/vinyl/02_laufey_lover-girl.glb' },
+        { title: '遊蕩的人', artist: 'good band', model: 'assets/vinyl/03_goodband_we-learn-to-let-go.glb' },
+        { title: '還願', artist: '草東沒有派對', model: 'assets/vinyl/04_nopartyforcaodong_devotion.glb' },
+        { title: 'Birds of a Feather', artist: 'Billie Eilish', model: 'assets/vinyl/05_billieeilish_birds-of-a-feather.glb' }
       ]
     }
   ]

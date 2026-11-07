@@ -69,6 +69,20 @@ body.page-open #frame,body.prize-open #frame{display:block}
 .gcard .thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .gcard .meta{padding:12px 14px}
 .gcard h3{margin:0 0 4px;font-size:17px}.gcard p{margin:0;font-size:13px;opacity:.75}
+.hw2-demo{background:#fffcd6;border-bottom:1.5px solid var(--ink)}
+.hw2-canvas{display:block;width:100%;height:auto;aspect-ratio:4/3;cursor:pointer;touch-action:none}
+.hw2-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;font-size:12px;color:var(--ink);background:rgba(255,255,255,.35)}
+.hw2-source{padding:4px 10px;border:1.5px solid var(--ink);border-radius:999px;background:var(--yellow-t);color:var(--ink);font:700 12px/1.2 monospace;cursor:pointer;white-space:nowrap}
+.hw2-source:hover{background:var(--pink-t)}
+
+/* ---------- PDE 原始碼視窗 ---------- */
+#code-viewer{position:fixed;inset:0;z-index:96;display:none;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;background:color-mix(in srgb,var(--paper) 88%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#code-viewer.open{display:flex}
+.code-panel{display:flex;flex-direction:column;width:min(960px,96vw);height:min(760px,88vh);overflow:hidden;border:1.5px solid var(--ink);border-radius:12px 16px 11px 15px;background:var(--paper-2);box-shadow:0 12px 36px rgba(60,40,20,.2)}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1.5px solid var(--ink);background:var(--yellow-t);color:var(--ink)}
+.code-head strong{font:700 18px/1.2 monospace}
+.code-close{width:34px;height:34px;border:1.5px solid var(--ink);border-radius:50%;background:var(--paper);color:var(--ink);font-size:24px;line-height:1;cursor:pointer}
+.code-content{flex:1;margin:0;padding:18px;overflow:auto;color:var(--ink);font:13px/1.65 Consolas,'Courier New',monospace;white-space:pre;background:rgba(255,255,255,.25)}
 
 /* 卡牌扇形 */
 .fan{position:relative;height:360px;margin-top:40px}
@@ -83,6 +97,22 @@ body.page-open #frame,body.prize-open #frame{display:block}
 
 .mb-host{max-width:980px;margin:6px auto 0;border:1.5px solid var(--ink);border-radius:12px 16px 11px 15px;overflow:hidden}
 .cc-host{height:min(62vh,500px);margin-top:6px}
+.model-playlist{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,260px);gap:clamp(20px,5vw,76px);max-width:1100px;min-height:430px;margin:18px auto 0;align-items:start}
+.vinyl-stack{position:relative;width:min(100%,900px);height:420px;margin:0 auto;perspective:1000px;isolation:isolate;overflow:visible}
+.model-card{display:block;min-width:0;padding:0;border:0;background:transparent;color:var(--ink);cursor:pointer;text-align:left;overflow:visible}
+.vinyl-record{position:absolute;left:50%;top:50%;width:240px;height:340px;margin:-120px 0 0 -120px;transform-origin:50% 86%;will-change:transform,filter,opacity;outline:none}
+.vinyl-record:focus-visible{outline:2px solid var(--rose);outline-offset:8px;border-radius:50%}
+.model-stage{position:relative;display:block;width:100%;height:240px;background:transparent}
+.model-stage canvas{display:block;width:100%;height:100%;filter:drop-shadow(10px 18px 10px rgba(68,48,42,.28))}
+.model-status{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;opacity:.7;pointer-events:none}
+.model-meta{display:block;position:relative;margin:4px -14px 0;text-align:center;line-height:1.25;pointer-events:auto;text-shadow:0 1px 0 var(--paper)}
+.model-meta strong{display:block;font-size:15px;color:var(--ink)}
+.model-meta small{display:block;margin-top:3px;font-size:12px;opacity:.72}
+.vinyl-detail{min-height:130px;padding:20px 0 20px 26px;border-left:1.5px solid color-mix(in srgb,var(--ink) 35%,transparent);opacity:0;transform:translateX(12px);pointer-events:none}
+.vinyl-detail.is-visible{pointer-events:auto}
+.vinyl-detail strong{display:block;font:700 clamp(28px,4vw,48px)/1.1 'Dancing Script','Noto Sans TC',sans-serif;color:var(--rose)}
+.vinyl-detail span{display:block;margin-top:12px;font-size:16px;opacity:.72}
+.model-playlist-note{text-align:center;margin:4px 0 0;font-size:13px;opacity:.7}
 
 /* ---------- 獎品展示 ---------- */
 #prize{position:fixed;inset:0;z-index:85;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:28px calc(var(--tabw) + 28px) 28px 28px;box-sizing:border-box;text-align:center;color:var(--ink);background:color-mix(in srgb,var(--paper) 84%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
@@ -129,4 +159,11 @@ body.page-open #frame,body.prize-open #frame{display:block}
   #page{padding:70px 22px 40px 22px}
   #prize{padding:64px 20px 24px 20px}
   #prize h2{font-size:32px}
+  .model-playlist{display:block;min-height:0;margin-top:8px}
+  .vinyl-stack{height:820px;width:100%;margin:0 auto}
+  .vinyl-record{width:220px;height:320px;margin:-110px 0 0 -110px}
+  .model-stage{height:220px}
+  .model-meta{margin-top:5px}
+  .vinyl-detail{min-height:86px;margin:4px auto 0;padding:16px 0 0;border-left:0;border-top:1.5px solid color-mix(in srgb,var(--ink) 35%,transparent);text-align:center;max-width:280px}
+  .vinyl-detail strong{font-size:34px}
 }
