@@ -403,6 +403,7 @@
         const isSelected = selected === index;
         const hoverShift = selected == null && hovered != null
           ? (index < hovered ? -12 : index > hovered ? 16 : 0) : 0;
+        const desktopSpread = Math.max(92, Math.min(145, (stack.clientWidth - 210) / 4));
         if (isSelected) {
           tween(card, {
             x: compact ? 0 : 88, y: compact ? 8 : -70, rotation: 0, scale: 1.08, opacity: 1, zIndex: 50,
@@ -410,7 +411,7 @@
           });
         } else {
           const depth = selected == null ? index : (index < selected ? index : index + 1);
-          const arcSpread = compact ? 118 : 145;
+          const arcSpread = compact ? 118 : desktopSpread;
           const arcX = compact ? ((index % 2) ? 118 : -118) : offset * arcSpread;
           const arcY = compact
             ? Math.floor(index / 2) * 250 - 190
