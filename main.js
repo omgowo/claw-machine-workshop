@@ -593,6 +593,8 @@ window.GameControls={
 const clock=new THREE.Clock();
 let camK=0;
 function loop(){
+  // 作品頁打開時娃娃機被整個蓋住，先暫停運算與繪圖，把效能留給作品頁與轉場。
+  if(document.body.classList.contains('page-open')){clock.getDelta();requestAnimationFrame(loop);return;}
   const dt=Math.min(clock.getDelta(),0.05),t=clock.elapsedTime;
   let vx=0;
   if(state==='idle'){

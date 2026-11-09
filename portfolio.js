@@ -291,7 +291,7 @@
         card.querySelector('.model-status').textContent = '模型預覽無法建立';
         return;
       }
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
       if ('toneMapping' in renderer && THREE.ACESFilmicToneMapping !== undefined) {
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.12;
@@ -324,6 +324,7 @@
       scene.add(group);
       let model = null;
       let startedAt = performance.now();
+      let dirty = true; // 唱片本身在畫布裡不會動（移動是外層卡片的 CSS），只有需要時才重畫
       loader.load(source, gltf => {
         model = gltf.scene;
         const bounds = new THREE.Box3().setFromObject(model);
@@ -344,6 +345,7 @@
         group.add(model);
         card.querySelector('.model-status').remove();
         startedAt = performance.now();
+        dirty = true;
       }, undefined, () => {
         card.querySelector('.model-status').textContent = '模型載入失敗';
       });
@@ -352,12 +354,10 @@
           renderer.dispose();
           return;
         }
-        if (model) {
-          group.rotation.y = Math.sin(time * .0004) * .035;
-          if (selected === card) group.rotation.z = (time - startedAt) * .00065;
-          else group.rotation.z = 0;
+        if (dirty) {
+          renderer.render(scene, camera);
+          dirty = false;
         }
-        renderer.render(scene, camera);
         requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
@@ -491,7 +491,8 @@
       });
       cards.push(card);
       stack.appendChild(card);
-      renderModel(card, item.model);
+      // 等色塊轉場結束後再一張一張建立 3D 預覽，避免轉場途中卡頓
+      window.setTimeout(() => { if (card.isConnected) renderModel(card, item.model); }, 800 + index * 150);
     });
     stack.addEventListener('click', event => {
       if (event.target === stack && selected != null) closeSelection();

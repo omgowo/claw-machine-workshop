@@ -114,6 +114,17 @@ body.page-open #frame,body.prize-open #frame{display:block}
 .vinyl-detail span{display:block;margin-top:12px;font-size:16px;opacity:.72}
 .model-playlist-note{text-align:center;margin:4px 0 0;font-size:13px;opacity:.7}
 
+/* ---------- 桌面版版面修正 ---------- */
+/* Matchbox 元件固定 16:10，寬度太大時高度會超出畫面；改成依視窗高度限制寬度 */
+@media (min-width:701px){
+  .mb-host{max-width:clamp(640px,calc((100vh - 240px) * 1.6),980px)}
+}
+/* Playlist：右側說明欄不再佔一整欄，唱片堆疊以整頁置中 */
+@media (min-width:1000px){
+  .model-playlist{display:block;position:relative}
+  .vinyl-detail{position:absolute;top:90px;right:0;width:260px;box-sizing:border-box}
+}
+
 /* ---------- 獎品展示 ---------- */
 #prize{position:fixed;inset:0;z-index:85;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:28px calc(var(--tabw) + 28px) 28px 28px;box-sizing:border-box;text-align:center;color:var(--ink);background:color-mix(in srgb,var(--paper) 84%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 #prize.open{display:flex}
